@@ -1,0 +1,30 @@
+<input
+  type="file"
+  class="file-input"
+  (change)="onFileSelected($event)"
+  accept="image/*"
+  #fileUploadInput
+/>
+
+<div
+  class="file-upload"
+  (dragover)="
+    $event.preventDefault(); fileUploadContainer.classList.add('dragover')
+  "
+  (dragleave)="
+    $event.preventDefault(); fileUploadContainer.classList.remove('dragover')
+  "
+  (drop)="onFileDrop($event)"
+  #fileUploadContainer
+>
+  @if (selectedFile()) {
+    <span class="file-upload-text">You selected a file</span>
+    <span class="file-upload-text">{{ selectedFile()?.name }}</span>
+  } @else {
+    <span class="file-upload-text">Drag and drop image here</span>
+    <span class="file-upload-text">Or</span>
+    <button class="file-upload-btn" (click)="fileUploadInput.click()">
+      Select file
+    </button>
+  }
+</div>

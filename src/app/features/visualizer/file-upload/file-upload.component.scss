@@ -1,0 +1,28 @@
+.file-input {
+  display: none;
+}
+
+.file-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 600px;
+  height: 300px;
+  border: 1px dashed #ccc;
+  border-radius: 16px;
+
+  &.dragover {
+    border-color: #007bff;
+    background-color: #f0f8ff;
+  }
+}
+
+.file-upload-text {
+  display: inline-block;
+
+  &:nth-child(2) {
+    margin-block: 8px;
+  }
+}
