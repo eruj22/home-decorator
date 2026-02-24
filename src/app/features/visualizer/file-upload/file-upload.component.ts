@@ -7,9 +7,9 @@ import { Component, output, signal } from '@angular/core';
   styleUrl: './file-upload.component.scss',
 })
 export class FileUploadComponent {
-  readonly fileChange = output<File>();
+  readonly fileChange = output<File | null>();
 
-  readonly selectedFile = signal<File | null>(null);
+  readonly selectedFile = signal<string | null>(null);
 
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
@@ -20,18 +20,21 @@ export class FileUploadComponent {
     event.preventDefault();
 
     const file: File | null = event.dataTransfer?.files[0] ?? null;
-    this.selectedFile.set(file);
     this.handleFile(file);
+  }
+
+  clearSelectedFile() {
+    this.selectedFile.set(null);
+    this.fileChange.emit(null);
   }
 
   private handleFile(file: File | null) {
     if (!file) {
       return;
     }
-
-    const formData = new FormData();
-    formData.append('image', file);
-
+    this.selectedFile.set(
+      URL.createObjectURL(new Blob([file], { type: file?.type })),
+    );
     this.fileChange.emit(file);
   }
 }

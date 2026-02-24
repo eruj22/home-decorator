@@ -18,8 +18,19 @@
   #fileUploadContainer
 >
   @if (selectedFile()) {
-    <span class="file-upload-text">You selected a file</span>
-    <span class="file-upload-text">{{ selectedFile()?.name }}</span>
+    <div class="file-upload-image-container">
+      <img
+        [src]="selectedFile()"
+        alt="Selected file preview"
+        class="file-upload-image"
+      />
+      <button
+        class="file-upload-clear-image-button"
+        (click)="clearSelectedFile()"
+      >
+        X
+      </button>
+    </div>
   } @else {
     <span class="file-upload-text">Drag and drop image here</span>
     <span class="file-upload-text">Or</span>

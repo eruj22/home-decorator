@@ -1,3 +1,13 @@
-<main>
-  <app-file-upload (fileChange)="onFileChange($event)"></app-file-upload>
+<main class="visualizer-container">
+  <div class="visualizer-controls">
+    <span>Upload image</span>
+    <app-file-upload (fileChange)="selectedFile.set($event)"></app-file-upload>
+    <span>Style</span>
+    <button (click)="uploadFile()">Visualize</button>
+  </div>
+  <div class="visualizer-output">
+    @if (createdImage()) {
+      <img [src]="createdImage()" alt="" class="visualizer-image" />
+    }
+  </div>
 </main>

@@ -13,6 +13,7 @@ export class VisualizerComponent {
   private readonly fileUploadApiService = inject(FileUploadApiService);
 
   readonly selectedFile = signal<File | null>(null);
+  readonly createdImage = signal<string | null>(null);
 
   uploadFile() {
     const selectedFile = this.selectedFile();
@@ -25,7 +26,7 @@ export class VisualizerComponent {
       .pipe(take(1))
       .subscribe({
         next: (response) => {
-          console.log('File uploaded successfully', response);
+          this.createdImage.set(response.imageUrl ?? null);
         },
         error: (error) => {
           console.error('Error uploading file', error);
