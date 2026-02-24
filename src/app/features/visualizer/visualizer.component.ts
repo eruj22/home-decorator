@@ -13,7 +13,7 @@ export class VisualizerComponent {
   private readonly fileUploadApiService = inject(FileUploadApiService);
 
   readonly selectedFile = signal<File | null>(null);
-  readonly createdImage = signal<string | null>(null);
+  readonly createdImages = signal<string[]>([]);
   readonly state = signal<'idle' | 'loading' | 'error'>('idle');
 
   uploadFile() {
@@ -27,7 +27,12 @@ export class VisualizerComponent {
       .pipe(take(1))
       .subscribe({
         next: (response) => {
-          this.createdImage.set(response.imageUrl ?? null);
+          this.createdImages.update(
+            (images) =>
+              [...images, response.imageUrl ?? null].filter(
+                Boolean,
+              ) as string[],
+          );
           this.state.set('idle');
         },
         error: () => {

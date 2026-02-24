@@ -6,7 +6,7 @@
     <button
       class="btn"
       (click)="uploadFile()"
-      [disabled]="state() === 'loading'"
+      [disabled]="state() === 'loading' || !selectedFile()"
     >
       @if (state() === "error") {
         <span class="text-red-500">
@@ -20,10 +20,10 @@
     </button>
   </div>
   <div
-    class="mx-8 mb-8 mt-14 gap-2 grid auto-rows-max grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3"
+    class="mx-8 mb-8 mt-14 gap-4 grid auto-rows-max grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3"
   >
-    @if (createdImage()) {
-      <img [src]="createdImage()" alt="" class="object-contain rounded-lg" />
+    @for (image of createdImages(); track $index) {
+      <img [src]="image" alt="" class="object-contain rounded-lg" />
     }
   </div>
 </main>
