@@ -1,13 +1,15 @@
-<main class="visualizer-container">
-  <div class="visualizer-controls">
+<main class="grid grid-cols-2 gap-4">
+  <div class="flex flex-col gap-4 p-4">
     <span>Upload image</span>
     <app-file-upload (fileChange)="selectedFile.set($event)"></app-file-upload>
     <span>Style</span>
-    <button (click)="uploadFile()">Visualize</button>
+    <button class="btn" (click)="uploadFile()">Visualize</button>
   </div>
-  <div class="visualizer-output">
+  <div
+    class="mx-8 mb-8 mt-14 gap-2 grid auto-rows-max grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3"
+  >
     @if (createdImage()) {
-      <img [src]="createdImage()" alt="" class="visualizer-image" />
+      <img [src]="createdImage()" alt="" class="object-contain rounded-lg" />
     }
   </div>
 </main>

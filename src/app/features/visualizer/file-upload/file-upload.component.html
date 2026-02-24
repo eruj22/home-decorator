@@ -1,13 +1,17 @@
 <input
   type="file"
-  class="file-input"
+  class="hidden"
   (change)="onFileSelected($event)"
   accept="image/*"
   #fileUploadInput
 />
 
 <div
-  class="file-upload"
+  class="h-140 flex flex-col items-center justify-center border-2 border-dashed border-gray-400 rounded p-4 w-full cursor-pointer"
+  [ngClass]="{
+    ' bg-cyan-950':
+      fileUploadContainer.classList.contains('dragover') || selectedFile(),
+  }"
   (dragover)="
     $event.preventDefault(); fileUploadContainer.classList.add('dragover')
   "
@@ -18,24 +22,22 @@
   #fileUploadContainer
 >
   @if (selectedFile()) {
-    <div class="file-upload-image-container">
+    <div class="size-4/5 flex items-center justify-center relative">
       <img
+        class="max-h-full"
         [src]="selectedFile()"
         alt="Selected file preview"
-        class="file-upload-image"
       />
       <button
-        class="file-upload-clear-image-button"
+        class="btn btn-soft btn-circle absolute top-1 right-1"
         (click)="clearSelectedFile()"
       >
         X
       </button>
     </div>
   } @else {
-    <span class="file-upload-text">Drag and drop image here</span>
-    <span class="file-upload-text">Or</span>
-    <button class="file-upload-btn" (click)="fileUploadInput.click()">
-      Select file
-    </button>
+    <span>Drag and drop image here</span>
+    <span class="my-2">Or</span>
+    <button class="btn" (click)="fileUploadInput.click()">Select file</button>
   }
 </div>

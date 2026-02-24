@@ -1,8 +1,9 @@
+import { NgClass } from '@angular/common';
 import { Component, output, signal } from '@angular/core';
 
 @Component({
   selector: 'app-file-upload',
-  imports: [],
+  imports: [NgClass],
   templateUrl: './file-upload.component.html',
   styleUrl: './file-upload.component.scss',
 })
