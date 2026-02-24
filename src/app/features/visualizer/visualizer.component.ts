@@ -14,22 +14,24 @@ export class VisualizerComponent {
 
   readonly selectedFile = signal<File | null>(null);
   readonly createdImage = signal<string | null>(null);
+  readonly state = signal<'idle' | 'loading' | 'error'>('idle');
 
   uploadFile() {
     const selectedFile = this.selectedFile();
     if (!selectedFile) {
       return;
     }
-
+    this.state.set('loading');
     this.fileUploadApiService
       .uploadFile(selectedFile)
       .pipe(take(1))
       .subscribe({
         next: (response) => {
           this.createdImage.set(response.imageUrl ?? null);
+          this.state.set('idle');
         },
-        error: (error) => {
-          console.error('Error uploading file', error);
+        error: () => {
+          this.state.set('error');
         },
       });
   }

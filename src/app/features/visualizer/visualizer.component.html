@@ -3,7 +3,21 @@
     <span>Upload image</span>
     <app-file-upload (fileChange)="selectedFile.set($event)"></app-file-upload>
     <span>Style</span>
-    <button class="btn" (click)="uploadFile()">Visualize</button>
+    <button
+      class="btn"
+      (click)="uploadFile()"
+      [disabled]="state() === 'loading'"
+    >
+      @if (state() === "error") {
+        <span class="text-red-500">
+          Error uploading file. Please try again.
+        </span>
+      } @else if (state() === "idle") {
+        Visualize
+      } @else {
+        <span class="loading loading-spinner"></span>
+      }
+    </button>
   </div>
   <div
     class="mx-8 mb-8 mt-14 gap-2 grid auto-rows-max grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3"
