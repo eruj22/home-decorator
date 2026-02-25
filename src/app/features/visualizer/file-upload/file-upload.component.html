@@ -7,7 +7,7 @@
 />
 
 <div
-  class="h-140 flex flex-col items-center justify-center border-2 border-dashed border-gray-400 rounded p-4 w-full cursor-pointer"
+  class="h-140 flex flex-col items-center justify-center border-2 border-dashed border-gray-400 rounded-md p-4 w-full cursor-pointer"
   [ngClass]="{
     ' bg-cyan-950':
       fileUploadContainer.classList.contains('dragover') || selectedFile(),
@@ -22,9 +22,9 @@
   #fileUploadContainer
 >
   @if (selectedFile()) {
-    <div class="size-4/5 flex items-center justify-center relative">
+    <div class="size-5/5 flex items-center justify-center relative">
       <img
-        class="max-h-full"
+        class="max-h-full rounded-lg"
         [src]="selectedFile()"
         alt="Selected file preview"
       />
