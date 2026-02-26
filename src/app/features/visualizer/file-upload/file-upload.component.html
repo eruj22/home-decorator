@@ -37,8 +37,16 @@
       </button>
     </div>
   } @else {
-    <span>Drag and drop image here</span>
-    <span class="my-2">Or</span>
+    @if (errorState() === "tooBig") {
+      <span class="text-red-500 mb-2">File is too big. Max size is 10MB.</span>
+    } @else if (errorState() === "invalidType") {
+      <span class="text-red-500 mb-2"
+        >Invalid file type. Please upload an image.</span
+      >
+    } @else {
+      <span>Drag and drop image here</span>
+      <span class="my-2">Or</span>
+    }
     <button class="btn" (click)="fileUploadInput.click()">Select file</button>
   }
 </div>

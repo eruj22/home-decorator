@@ -2,6 +2,8 @@ import { NgClass } from '@angular/common';
 import { Component, input, signal } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
 @Component({
   selector: 'app-file-upload',
   imports: [NgClass],
@@ -12,9 +14,11 @@ export class FileUploadComponent {
   readonly formInput = input<FormControl>();
 
   readonly selectedFile = signal<string | null>(null);
+  readonly errorState = signal<'tooBig' | 'invalidType' | null>(null);
 
-  onFileSelected(event: any) {
-    const file: File = event.target.files[0];
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file: File | null = input.files ? input.files[0] : null;
     this.handleFile(file);
   }
 
@@ -34,6 +38,15 @@ export class FileUploadComponent {
     if (!file) {
       return;
     }
+    if (!file.type.startsWith('image/')) {
+      this.errorState.set('invalidType');
+      return;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      this.errorState.set('tooBig');
+      return;
+    }
+    this.errorState.set(null);
     this.selectedFile.set(
       URL.createObjectURL(new Blob([file], { type: file?.type })),
     );
