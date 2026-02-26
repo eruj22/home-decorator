@@ -1,24 +1,60 @@
 <main class="grid lg:grid-cols-[500px_2fr] gap-12">
-  <div class="py-4 flex flex-col gap-6">
-    <span>Upload image</span>
-    <app-file-upload (fileChange)="selectedFile.set($event)"></app-file-upload>
-    <span>Style</span>
+  <form class="py-4 flex flex-col" [formGroup]="visualizerForm">
+    <label for="upload-file" class="mb-2 font-semibold">Upload image</label>
+    <app-file-upload
+      [formInput]="visualizerForm.controls.image"
+    ></app-file-upload>
+
+    <label for="room-type" class="mt-6 mb-2 font-semibold">Room type</label>
+    <select
+      class="select select-md w-full"
+      [class.select-error]="
+        visualizerForm.controls.roomType.value === null &&
+        visualizerForm.controls.roomType.touched
+      "
+      id="room-type"
+      formControlName="roomType"
+    >
+      <option disabled selected [value]="null">Select room type</option>
+      @for (item of ROOM_TYPES; track $index) {
+        <option>{{ item.label }}</option>
+      }
+    </select>
+
+    <label for="room-style" class="mt-6 mb-2 font-semibold">Room style</label>
+    <select
+      class="select select-md w-full"
+      id="room-style"
+      formControlName="styleType"
+    >
+      <option disabled selected [value]="null">Select room style</option>
+      @for (item of STYLE_TYPES; track $index) {
+        <option>{{ item.label }}</option>
+      }
+    </select>
+
+    @if (state() === "invalid") {
+      <span class="text-red-500 -mb-8 mt-4 text-xs">
+        Please fill in all required fields before visualizing your room.
+      </span>
+    }
+
     <button
-      class="btn"
+      class="btn mt-12"
       (click)="uploadFile()"
-      [disabled]="state() === 'loading' || !selectedFile()"
+      [disabled]="state() === 'loading'"
     >
       @if (state() === "error") {
         <span class="text-red-500">
           Error uploading file. Please try again.
         </span>
-      } @else if (state() === "idle") {
-        Visualize
-      } @else {
+      } @else if (state() === "loading") {
         <span class="loading loading-spinner"></span>
+      } @else {
+        Visualize
       }
     </button>
-  </div>
+  </form>
   <div
     class="mb-8 mt-16 gap-6 grid auto-rows-max grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3"
   >

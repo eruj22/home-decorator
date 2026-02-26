@@ -1,7 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { UploadFileResponse } from './models/file-upload.model';
+import {
+  UploadImagePayload,
+  UploadImageResponse,
+} from './models/image-upload.model';
 
 @Injectable({
   providedIn: 'root',
@@ -9,11 +12,13 @@ import { UploadFileResponse } from './models/file-upload.model';
 export class FileUploadApiService {
   private readonly http = inject(HttpClient);
 
-  uploadFile(file: File) {
+  uploadImage(payload: UploadImagePayload) {
     const formData = new FormData();
-    formData.append('image', file);
+    formData.append('image', payload.image);
+    formData.append('roomType', payload.roomType);
+    formData.append('styleType', payload.styleType);
 
-    return this.http.post<UploadFileResponse>(
+    return this.http.post<UploadImageResponse>(
       `${environment.backendEndpoint}/api/v1/upload`,
       formData,
     );

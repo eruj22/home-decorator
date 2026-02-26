@@ -1,5 +1,6 @@
 import { NgClass } from '@angular/common';
-import { Component, output, signal } from '@angular/core';
+import { Component, input, signal } from '@angular/core';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-file-upload',
@@ -8,7 +9,7 @@ import { Component, output, signal } from '@angular/core';
   styleUrl: './file-upload.component.scss',
 })
 export class FileUploadComponent {
-  readonly fileChange = output<File | null>();
+  readonly formInput = input<FormControl>();
 
   readonly selectedFile = signal<string | null>(null);
 
@@ -26,7 +27,7 @@ export class FileUploadComponent {
 
   clearSelectedFile() {
     this.selectedFile.set(null);
-    this.fileChange.emit(null);
+    this.formInput()?.setValue(null);
   }
 
   private handleFile(file: File | null) {
@@ -36,6 +37,6 @@ export class FileUploadComponent {
     this.selectedFile.set(
       URL.createObjectURL(new Blob([file], { type: file?.type })),
     );
-    this.fileChange.emit(file);
+    this.formInput()?.setValue(file);
   }
 }
