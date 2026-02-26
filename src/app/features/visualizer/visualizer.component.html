@@ -38,19 +38,21 @@
         Please fill in all required fields before visualizing your room.
       </span>
     }
+    @if (state() === "error") {
+      <span class="text-red-500 -mb-8 mt-4 text-xs">
+        Error uploading file. Please try again.
+      </span>
+    }
 
     <button
       class="btn mt-12"
       (click)="uploadFile()"
       [disabled]="state() === 'loading'"
     >
-      @if (state() === "error") {
-        <span class="text-red-500">
-          Error uploading file. Please try again.
-        </span>
-      } @else if (state() === "loading") {
+      @if (state() === "loading") {
         <span class="loading loading-spinner"></span>
-      } @else {
+      }
+      @if (state() === "idle" || state() === "invalid") {
         Visualize
       }
     </button>
