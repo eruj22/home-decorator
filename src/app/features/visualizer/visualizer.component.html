@@ -16,8 +16,8 @@
       formControlName="roomType"
     >
       <option disabled selected [value]="null">Select room type</option>
-      @for (item of ROOM_TYPES; track $index) {
-        <option>{{ item.label }}</option>
+      @for (roomType of ROOM_TYPES; track $index) {
+        <option>{{ roomType.label }}</option>
       }
     </select>
 
@@ -28,10 +28,29 @@
       formControlName="styleType"
     >
       <option disabled selected [value]="null">Select room style</option>
-      @for (item of STYLE_TYPES; track $index) {
-        <option>{{ item.label }}</option>
+      @for (styleType of STYLE_TYPES; track $index) {
+        <option>{{ styleType.label }}</option>
       }
     </select>
+
+    <label for="lighting-condition" class="mt-6 mb-2 font-semibold">
+      Lighting conditions
+    </label>
+    @for (lightingCondition of LIGHTING_CONDITIONS; track $index) {
+      <label [for]="lightingCondition.value">
+        <input
+          type="radio"
+          id="{{ lightingCondition.value }}"
+          class="radio mr-2 mb-1"
+          formControlName="lightingCondition"
+          value="{{ lightingCondition.value }}"
+        />
+        {{ lightingCondition.label }} -
+        <small class="text-xs italic">
+          {{ lightingCondition.description }}
+        </small>
+      </label>
+    }
 
     @if (state() === "invalid") {
       <span class="text-red-500 -mb-8 mt-4 text-xs">

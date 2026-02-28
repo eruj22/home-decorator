@@ -9,12 +9,17 @@ import { take } from 'rxjs';
 import { FileUploadApiService } from '../../core/file-upload-api.service';
 import { UploadImagePayload } from '../../core/models/image-upload.model';
 import { FileUploadComponent } from './file-upload/file-upload.component';
-import { ROOM_TYPES, STYLE_TYPES } from './visualizer-select-data';
+import {
+  LIGHTING_CONDITIONS,
+  ROOM_TYPES,
+  STYLE_TYPES,
+} from './visualizer-select-data';
 
 interface VisualizerForm {
   image: FormControl<File | null>;
   roomType: FormControl<string | null>;
   styleType: FormControl<string | null>;
+  lightingCondition: FormControl<string | null>;
 }
 
 @Component({
@@ -32,10 +37,14 @@ export class VisualizerComponent {
 
   readonly ROOM_TYPES = ROOM_TYPES;
   readonly STYLE_TYPES = STYLE_TYPES;
+  readonly LIGHTING_CONDITIONS = LIGHTING_CONDITIONS;
 
   readonly visualizerForm = new FormGroup<VisualizerForm>({
     image: new FormControl(null, [Validators.required]),
     roomType: new FormControl(null, [Validators.required]),
+    lightingCondition: new FormControl(LIGHTING_CONDITIONS[0].value, [
+      Validators.required,
+    ]),
     styleType: new FormControl(null, [Validators.required]),
   });
 
@@ -50,17 +59,17 @@ export class VisualizerComponent {
       image: this.visualizerForm.controls.image.value!,
       roomType: this.visualizerForm.controls.roomType.value!,
       styleType: this.visualizerForm.controls.styleType.value!,
+      lightingCondition: this.visualizerForm.controls.lightingCondition.value!,
     };
     this.fileUploadApiService
       .uploadImage(formValue)
       .pipe(take(1))
       .subscribe({
         next: (response) => {
-          this.createdImages.update(
-            (images) =>
-              [...images, response.imageUrl ?? null].filter(
-                Boolean,
-              ) as string[],
+          this.createdImages.update((images) =>
+            [...images, response.imageUrl ?? null].filter(
+              (url) => url !== null,
+            ),
           );
           this.state.set('idle');
         },

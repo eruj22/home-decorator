@@ -17,6 +17,7 @@ export class FileUploadApiService {
     formData.append('image', payload.image);
     formData.append('roomType', payload.roomType);
     formData.append('styleType', payload.styleType);
+    formData.append('lightingCondition', payload.lightingCondition);
 
     return this.http.post<UploadImageResponse>(
       `${environment.backendEndpoint}/api/v1/upload`,

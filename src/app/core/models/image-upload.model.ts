@@ -7,4 +7,5 @@ export type UploadImagePayload = {
   image: File;
   roomType: string;
   styleType: string;
+  lightingCondition: string;
 };
