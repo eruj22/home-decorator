@@ -1,3 +1,85 @@
-<main>
-  <p>visualizer works!</p>
+<main class="grid lg:grid-cols-[500px_2fr] gap-12">
+  <form class="py-4 flex flex-col" [formGroup]="visualizerForm">
+    <label for="upload-file" class="mb-2 font-semibold">Upload image</label>
+    <app-file-upload
+      [formInput]="visualizerForm.controls.image"
+    ></app-file-upload>
+
+    <label for="room-type" class="mt-6 mb-2 font-semibold">Room type</label>
+    <select
+      class="select select-md w-full"
+      [class.select-error]="
+        visualizerForm.controls.roomType.value === null &&
+        visualizerForm.controls.roomType.touched
+      "
+      id="room-type"
+      formControlName="roomType"
+    >
+      <option disabled selected [value]="null">Select room type</option>
+      @for (roomType of ROOM_TYPES; track $index) {
+        <option>{{ roomType.label }}</option>
+      }
+    </select>
+
+    <label for="room-style" class="mt-6 mb-2 font-semibold">Room style</label>
+    <select
+      class="select select-md w-full"
+      id="room-style"
+      formControlName="styleType"
+    >
+      <option disabled selected [value]="null">Select room style</option>
+      @for (styleType of STYLE_TYPES; track $index) {
+        <option>{{ styleType.label }}</option>
+      }
+    </select>
+
+    <label for="lighting-condition" class="mt-6 mb-2 font-semibold">
+      Lighting conditions
+    </label>
+    @for (lightingCondition of LIGHTING_CONDITIONS; track $index) {
+      <label [for]="lightingCondition.value">
+        <input
+          type="radio"
+          id="{{ lightingCondition.value }}"
+          class="radio mr-2 mb-1"
+          formControlName="lightingCondition"
+          value="{{ lightingCondition.value }}"
+        />
+        {{ lightingCondition.label }} -
+        <small class="text-xs italic">
+          {{ lightingCondition.description }}
+        </small>
+      </label>
+    }
+
+    @if (state() === "invalid") {
+      <span class="text-red-500 -mb-8 mt-4 text-xs">
+        Please fill in all required fields before visualizing your room.
+      </span>
+    }
+    @if (state() === "error") {
+      <span class="text-red-500 -mb-8 mt-4 text-xs">
+        Error uploading file. Please try again.
+      </span>
+    }
+
+    <button
+      class="btn mt-12"
+      (click)="uploadFile()"
+      [disabled]="state() === 'loading'"
+    >
+      @if (state() === "loading") {
+        <span class="loading loading-spinner"></span>
+      } @else {
+        Visualize
+      }
+    </button>
+  </form>
+  <div
+    class="mb-8 mt-12 gap-6 grid auto-rows-max grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3"
+  >
+    @for (image of createdImages(); track $index) {
+      <img [src]="image" alt="" class="object-contain rounded-lg" />
+    }
+  </div>
 </main>

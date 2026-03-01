@@ -1,0 +1,51 @@
+<input
+  type="file"
+  class="hidden"
+  (change)="onFileSelected($event)"
+  accept="image/*"
+  #fileUploadInput
+/>
+
+<div
+  class="h-80 md:h-110 lg:h-130 flex flex-col items-center justify-center border-2 border-dashed border-gray-400 rounded-md p-4 w-full cursor-pointer"
+  [ngClass]="{
+    ' bg-cyan-950':
+      fileUploadContainer.classList.contains('dragover') || selectedFile(),
+  }"
+  (dragover)="
+    $event.preventDefault(); fileUploadContainer.classList.add('dragover')
+  "
+  (dragleave)="
+    $event.preventDefault(); fileUploadContainer.classList.remove('dragover')
+  "
+  (drop)="onFileDrop($event)"
+  #fileUploadContainer
+>
+  @if (selectedFile()) {
+    <div class="size-5/5 flex items-center justify-center relative">
+      <img
+        class="max-h-full rounded-lg"
+        [src]="selectedFile()"
+        alt="Selected file preview"
+      />
+      <button
+        class="btn btn-soft btn-circle absolute top-1 right-1"
+        (click)="clearSelectedFile()"
+      >
+        X
+      </button>
+    </div>
+  } @else {
+    @if (errorState() === "tooBig") {
+      <span class="text-red-500 mb-2">File is too big. Max size is 10MB.</span>
+    } @else if (errorState() === "invalidType") {
+      <span class="text-red-500 mb-2"
+        >Invalid file type. Please upload an image.</span
+      >
+    } @else {
+      <span>Drag and drop image here</span>
+      <span class="my-2">Or</span>
+    }
+    <button class="btn" (click)="fileUploadInput.click()">Select file</button>
+  }
+</div>
