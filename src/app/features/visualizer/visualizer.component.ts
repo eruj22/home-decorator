@@ -42,10 +42,10 @@ export class VisualizerComponent {
   readonly visualizerForm = new FormGroup<VisualizerForm>({
     image: new FormControl(null, [Validators.required]),
     roomType: new FormControl(null, [Validators.required]),
+    styleType: new FormControl(null, [Validators.required]),
     lightingCondition: new FormControl(LIGHTING_CONDITIONS[0].value, [
       Validators.required,
     ]),
-    styleType: new FormControl(null, [Validators.required]),
   });
 
   uploadFile() {
