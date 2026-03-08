@@ -1,7 +1,15 @@
-<nav class="navbar">
-  <span class="navbar-logo">Home Decorator</span>
-  <ul class="navbar-links">
-    <li class="navbar-link"><a routerLink="/">Home</a></li>
-    <li class="navbar-link"><a routerLink="/visualizer">Visualizer</a></li>
+<nav class="flex items-center justify-between py-2 px-4">
+  <span class="text-2xl font-bold">
+    <a routerLink="/">Home Decorator</a>
+  </span>
+  <ul class="flex gap-4">
+    @if (isAuthenticated()) {
+      <li><a routerLink="/visualizer">Visualizer</a></li>
+      <li>
+        <button (click)="logout()" class="">Logout</button>
+      </li>
+    } @else {
+      <li><a routerLink="/login">Login</a></li>
+    }
   </ul>
 </nav>

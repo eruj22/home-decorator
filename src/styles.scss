@@ -18,6 +18,14 @@ a {
   color: var(--color-secondary);
 }
 
+nav button {
+  color: var(--color-secondary);
+}
+
+button {
+  cursor: pointer;
+}
+
 main {
   min-height: calc(100vh - 52px);
   padding: 1rem;

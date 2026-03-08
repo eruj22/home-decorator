@@ -22,4 +22,9 @@ export class AuthService {
     this.cookieService.set(COOKIE_AUTH, token, { path: '/' });
     this.authToken.set(token);
   }
+
+  clearAuthToken() {
+    this.cookieService.delete(COOKIE_AUTH, '/');
+    this.authToken.set(null);
+  }
 }
