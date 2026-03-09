@@ -19,7 +19,10 @@ export class AuthService {
   }
 
   setAuthToken(token: string) {
-    this.cookieService.set(COOKIE_AUTH, token, { path: '/' });
+    this.cookieService.set(COOKIE_AUTH, token, {
+      path: '/',
+      expires: new Date(Date.now() + 60 * 60 * 1000),
+    });
     this.authToken.set(token);
   }
 
