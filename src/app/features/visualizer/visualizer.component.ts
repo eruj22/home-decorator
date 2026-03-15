@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
@@ -7,6 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { take } from 'rxjs';
+import { AuthService } from '../../core/auth.service';
 import { FileUploadApiService } from '../../core/file-upload-api.service';
 import {
   GeneratedImage,
@@ -36,6 +38,7 @@ interface VisualizerForm {
 export class VisualizerComponent {
   private readonly fileUploadApiService = inject(FileUploadApiService);
   private readonly userApiService = inject(UserApiService);
+  private readonly authService = inject(AuthService);
 
   readonly selectedImage = signal<File | null>(null);
   readonly createdImages = signal<GeneratedImage[]>([]);
@@ -87,7 +90,11 @@ export class VisualizerComponent {
           this.createdImages.update((images) => [...images, response]);
           this.state.set('idle');
         },
-        error: (error) => {
+        error: (error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            this.authService.logout('/login');
+            return;
+          }
           this.state.set('error');
           this.errorMessage.set(error.error.message);
         },
