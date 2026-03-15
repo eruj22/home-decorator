@@ -59,7 +59,7 @@
     }
     @if (state() === "error") {
       <span class="text-red-500 -mb-8 mt-4 text-xs">
-        Error uploading file. Please try again.
+        {{ errorMessage() ?? "Error uploading file. Please try again." }}
       </span>
     }
 
@@ -79,7 +79,11 @@
     class="mb-8 mt-12 gap-6 grid auto-rows-max grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3"
   >
     @for (image of createdImages(); track $index) {
-      <img [src]="image" alt="" class="object-contain rounded-lg" />
+      <img
+        [src]="image.generatedImageUrl"
+        alt=""
+        class="object-contain rounded-lg"
+      />
     }
   </div>
 </main>

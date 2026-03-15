@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
   FormControl,
   FormGroup,
@@ -7,7 +8,11 @@ import {
 } from '@angular/forms';
 import { take } from 'rxjs';
 import { FileUploadApiService } from '../../core/file-upload-api.service';
-import { UploadImagePayload } from '../../core/models/image-upload.model';
+import {
+  GeneratedImage,
+  UploadImagePayload,
+} from '../../core/models/image-upload.model';
+import { UserApiService } from '../../core/user-api.service';
 import { FileUploadComponent } from './file-upload/file-upload.component';
 import {
   LIGHTING_CONDITIONS,
@@ -30,10 +35,12 @@ interface VisualizerForm {
 })
 export class VisualizerComponent {
   private readonly fileUploadApiService = inject(FileUploadApiService);
+  private readonly userApiService = inject(UserApiService);
 
   readonly selectedImage = signal<File | null>(null);
-  readonly createdImages = signal<string[]>([]);
+  readonly createdImages = signal<GeneratedImage[]>([]);
   readonly state = signal<'idle' | 'loading' | 'error' | 'invalid'>('idle');
+  readonly errorMessage = signal<string | null>(null);
 
   readonly ROOM_TYPES = ROOM_TYPES;
   readonly STYLE_TYPES = STYLE_TYPES;
@@ -47,6 +54,17 @@ export class VisualizerComponent {
       Validators.required,
     ]),
   });
+
+  readonly generatedImages = toSignal(this.userApiService.getGeneratedImages());
+
+  constructor() {
+    effect(() => {
+      const generatedImages = this.generatedImages();
+      if (generatedImages) {
+        this.createdImages.set(generatedImages.images);
+      }
+    });
+  }
 
   uploadFile() {
     if (this.visualizerForm.invalid) {
@@ -66,15 +84,12 @@ export class VisualizerComponent {
       .pipe(take(1))
       .subscribe({
         next: (response) => {
-          this.createdImages.update((images) =>
-            [...images, response.imageUrl ?? null].filter(
-              (url) => url !== null,
-            ),
-          );
+          this.createdImages.update((images) => [...images, response]);
           this.state.set('idle');
         },
-        error: () => {
+        error: (error) => {
           this.state.set('error');
+          this.errorMessage.set(error.error.message);
         },
       });
   }
