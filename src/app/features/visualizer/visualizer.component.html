@@ -81,6 +81,7 @@
     @for (image of createdImages(); track $index) {
       <img
         [src]="image.generatedImageUrl"
+        loading="lazy"
         alt=""
         class="object-contain rounded-lg"
       />
