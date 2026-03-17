@@ -65,7 +65,7 @@
 
     <button
       class="btn mt-12"
-      (click)="uploadFile()"
+      (click)="uploadImage()"
       [disabled]="state() === 'loading'"
     >
       @if (state() === "loading") {
@@ -78,13 +78,47 @@
   <div
     class="mb-8 mt-12 gap-6 grid auto-rows-max grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3"
   >
-    @for (image of createdImages(); track $index) {
+    @for (image of displayedImages(); track $index) {
       <img
         [src]="image.generatedImageUrl"
         loading="lazy"
         alt=""
-        class="object-contain rounded-lg"
+        class="object-contain rounded-lg cursor-pointer"
+        (click)="imageModal.showModal(); selectedImage.set(image)"
+        (keydown)="imageModal.showModal(); selectedImage.set(image)"
       />
     }
   </div>
 </main>
+
+<dialog #imageModal class="modal">
+  <div class="modal-box max-w-8/12">
+    <img
+      [src]="selectedImage()?.generatedImageUrl"
+      loading="lazy"
+      alt=""
+      class="object-contain rounded-lg"
+    />
+    <div class="flex justify-between mt-4 gap-4">
+      <div class="flex-col gap-2">
+        <div>
+          <span>Style type: </span>
+          <span class="font-semibold">{{ selectedImage()?.styleType }}</span>
+        </div>
+        <div>
+          <span>Room type: </span>
+          <span class="font-semibold">{{ selectedImage()?.roomType }}</span>
+        </div>
+        <div>
+          <span>Lighting condition: </span>
+          <span class="font-semibold capitalize">
+            {{ selectedImage()?.lightingCondition }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>

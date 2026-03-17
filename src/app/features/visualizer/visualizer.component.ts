@@ -40,8 +40,8 @@ export class VisualizerComponent {
   private readonly userApiService = inject(UserApiService);
   private readonly authService = inject(AuthService);
 
-  readonly selectedImage = signal<File | null>(null);
-  readonly createdImages = signal<GeneratedImage[]>([]);
+  readonly selectedImage = signal<GeneratedImage | null>(null);
+  readonly displayedImages = signal<GeneratedImage[]>([]);
   readonly state = signal<'idle' | 'loading' | 'error' | 'invalid'>('idle');
   readonly errorMessage = signal<string | null>(null);
 
@@ -64,12 +64,12 @@ export class VisualizerComponent {
     effect(() => {
       const generatedImages = this.generatedImages();
       if (generatedImages) {
-        this.createdImages.set(generatedImages.images);
+        this.displayedImages.set(generatedImages.images);
       }
     });
   }
 
-  uploadFile() {
+  uploadImage() {
     if (this.visualizerForm.invalid) {
       this.state.set('invalid');
       return;
@@ -87,7 +87,7 @@ export class VisualizerComponent {
       .pipe(take(1))
       .subscribe({
         next: (response) => {
-          this.createdImages.update((images) => [...images, response]);
+          this.displayedImages.update((images) => [...images, response]);
           this.state.set('idle');
         },
         error: (error: HttpErrorResponse) => {
