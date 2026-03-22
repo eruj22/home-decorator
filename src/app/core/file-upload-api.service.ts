@@ -24,4 +24,10 @@ export class FileUploadApiService {
       formData,
     );
   }
+
+  deleteImage(imageId: string) {
+    return this.http.delete(
+      `${environment.backendEndpoint}/api/v1/images/${imageId}`,
+    );
+  }
 }

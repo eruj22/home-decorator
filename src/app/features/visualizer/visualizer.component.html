@@ -91,34 +91,8 @@
   </div>
 </main>
 
-<dialog #imageModal class="modal">
-  <div class="modal-box max-w-8/12">
-    <img
-      [src]="selectedImage()?.generatedImageUrl"
-      loading="lazy"
-      alt=""
-      class="object-contain rounded-lg"
-    />
-    <div class="flex justify-between mt-4 gap-4">
-      <div class="flex-col gap-2">
-        <div>
-          <span>Style type: </span>
-          <span class="font-semibold">{{ selectedImage()?.styleType }}</span>
-        </div>
-        <div>
-          <span>Room type: </span>
-          <span class="font-semibold">{{ selectedImage()?.roomType }}</span>
-        </div>
-        <div>
-          <span>Lighting condition: </span>
-          <span class="font-semibold capitalize">
-            {{ selectedImage()?.lightingCondition }}
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <form method="dialog" class="modal-backdrop">
-    <button>close</button>
-  </form>
-</dialog>
+<app-image-dialog
+  [selectedImage]="selectedImage()"
+  (deletedImage)="onImageDelete($event)"
+  #imageModal
+></app-image-dialog>

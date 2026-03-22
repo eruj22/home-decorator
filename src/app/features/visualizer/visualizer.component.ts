@@ -16,6 +16,7 @@ import {
 } from '../../core/models/image-upload.model';
 import { UserApiService } from '../../core/user-api.service';
 import { FileUploadComponent } from './file-upload/file-upload.component';
+import { ImageDialogComponent } from './image-dialog/image-dialog.component';
 import {
   LIGHTING_CONDITIONS,
   ROOM_TYPES,
@@ -31,7 +32,7 @@ interface VisualizerForm {
 
 @Component({
   selector: 'app-visualizer',
-  imports: [FileUploadComponent, ReactiveFormsModule],
+  imports: [FileUploadComponent, ReactiveFormsModule, ImageDialogComponent],
   templateUrl: './visualizer.component.html',
   styleUrl: './visualizer.component.scss',
 })
@@ -99,5 +100,12 @@ export class VisualizerComponent {
           this.errorMessage.set(error.error.message);
         },
       });
+  }
+
+  onImageDelete(imageId: string) {
+    this.displayedImages.update((images) =>
+      images.filter((image) => image.id !== imageId),
+    );
+    this.selectedImage.set(null);
   }
 }

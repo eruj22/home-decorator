@@ -16,4 +16,10 @@ export type GeneratedImage = {
   styleType: string;
   lightingCondition: string;
   createdAt: string;
+  imageSize?: ImageSize;
+};
+
+export type ImageSize = {
+  width: number;
+  height: number;
 };
