@@ -7,7 +7,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { take } from 'rxjs';
+import { catchError, EMPTY, take } from 'rxjs';
 import { AuthService } from '../../core/auth.service';
 import { FileUploadApiService } from '../../core/file-upload-api.service';
 import {
@@ -43,7 +43,12 @@ export class VisualizerComponent {
 
   readonly selectedImage = signal<GeneratedImage | null>(null);
   readonly displayedImages = signal<GeneratedImage[]>([]);
-  readonly state = signal<'idle' | 'loading' | 'error' | 'invalid'>('idle');
+  readonly uploadImageState = signal<'idle' | 'loading' | 'error' | 'invalid'>(
+    'idle',
+  );
+  readonly generatedImageState = signal<'idle' | 'loading' | 'error'>(
+    'loading',
+  );
   readonly errorMessage = signal<string | null>(null);
 
   readonly ROOM_TYPES = ROOM_TYPES;
@@ -59,23 +64,31 @@ export class VisualizerComponent {
     ]),
   });
 
-  readonly generatedImages = toSignal(this.userApiService.getGeneratedImages());
+  readonly generatedImages = toSignal(
+    this.userApiService.getGeneratedImages().pipe(
+      catchError(() => {
+        this.generatedImageState.set('error');
+        return EMPTY;
+      }),
+    ),
+  );
 
   constructor() {
     effect(() => {
       const generatedImages = this.generatedImages();
       if (generatedImages) {
         this.displayedImages.set(generatedImages.images);
+        this.generatedImageState.set('idle');
       }
     });
   }
 
   uploadImage() {
     if (this.visualizerForm.invalid) {
-      this.state.set('invalid');
+      this.uploadImageState.set('invalid');
       return;
     }
-    this.state.set('loading');
+    this.uploadImageState.set('loading');
 
     const formValue: UploadImagePayload = {
       image: this.visualizerForm.controls.image.value!,
@@ -89,14 +102,14 @@ export class VisualizerComponent {
       .subscribe({
         next: (response) => {
           this.displayedImages.update((images) => [...images, response]);
-          this.state.set('idle');
+          this.uploadImageState.set('idle');
         },
         error: (error: HttpErrorResponse) => {
           if (error.status === 401) {
             this.authService.logout('/login');
             return;
           }
-          this.state.set('error');
+          this.uploadImageState.set('error');
           this.errorMessage.set(error.error.message);
         },
       });
