@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   FormControl,
@@ -7,7 +7,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { catchError, EMPTY, take } from 'rxjs';
+import { catchError, of, take } from 'rxjs';
 import { AuthService } from '../../core/auth.service';
 import { FileUploadApiService } from '../../core/file-upload-api.service';
 import {
@@ -46,10 +46,7 @@ export class VisualizerComponent {
   readonly uploadImageState = signal<'idle' | 'loading' | 'error' | 'invalid'>(
     'idle',
   );
-  readonly generatedImageState = signal<'idle' | 'loading' | 'error'>(
-    'loading',
-  );
-  readonly errorMessage = signal<string | null>(null);
+  readonly uploadImageErrorMessage = signal<string | null>(null);
 
   readonly ROOM_TYPES = ROOM_TYPES;
   readonly STYLE_TYPES = STYLE_TYPES;
@@ -66,19 +63,31 @@ export class VisualizerComponent {
 
   readonly generatedImages = toSignal(
     this.userApiService.getGeneratedImages().pipe(
-      catchError(() => {
-        this.generatedImageState.set('error');
-        return EMPTY;
-      }),
+      catchError(() =>
+        of({
+          images: [],
+          error: true,
+        }),
+      ),
     ),
   );
+
+  readonly generatedImageState = computed<'idle' | 'loading' | 'error'>(() => {
+    const generatedImages = this.generatedImages();
+    if (generatedImages && 'error' in generatedImages) {
+      return 'error';
+    }
+    if (generatedImages === undefined) {
+      return 'loading';
+    }
+    return 'idle';
+  });
 
   constructor() {
     effect(() => {
       const generatedImages = this.generatedImages();
       if (generatedImages) {
         this.displayedImages.set(generatedImages.images);
-        this.generatedImageState.set('idle');
       }
     });
   }
@@ -110,7 +119,7 @@ export class VisualizerComponent {
             return;
           }
           this.uploadImageState.set('error');
-          this.errorMessage.set(error.error.message);
+          this.uploadImageErrorMessage.set(error.error.message);
         },
       });
   }

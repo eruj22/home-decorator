@@ -3,8 +3,8 @@
     @if (selectedImage()?.generatedImageUrl) {
       <img
         [ngSrc]="selectedImage()!.generatedImageUrl"
-        [width]="selectedImage()?.imageSize?.width ?? 1000"
-        [height]="selectedImage()?.imageSize?.height ?? 600"
+        [width]="selectedImage()?.size?.width ?? 1000"
+        [height]="selectedImage()?.size?.height ?? 600"
         alt=""
         class="object-contain rounded-lg mx-auto"
       />

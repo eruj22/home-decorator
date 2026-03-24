@@ -59,7 +59,9 @@
     }
     @if (uploadImageState() === "error") {
       <span class="text-red-500 -mb-8 mt-4 text-xs">
-        {{ errorMessage() ?? "Error uploading file. Please try again." }}
+        {{
+          uploadImageErrorMessage() ?? "Error uploading file. Please try again."
+        }}
       </span>
     }
 
