@@ -52,23 +52,25 @@
       </label>
     }
 
-    @if (state() === "invalid") {
+    @if (uploadImageState() === "invalid") {
       <span class="text-red-500 -mb-8 mt-4 text-xs">
         Please fill in all required fields before visualizing your room.
       </span>
     }
-    @if (state() === "error") {
+    @if (uploadImageState() === "error") {
       <span class="text-red-500 -mb-8 mt-4 text-xs">
-        Error uploading file. Please try again.
+        {{
+          uploadImageErrorMessage() ?? "Error uploading file. Please try again."
+        }}
       </span>
     }
 
     <button
       class="btn mt-12"
-      (click)="uploadFile()"
-      [disabled]="state() === 'loading'"
+      (click)="uploadImage()"
+      [disabled]="uploadImageState() === 'loading'"
     >
-      @if (state() === "loading") {
+      @if (uploadImageState() === "loading") {
         <span class="loading loading-spinner"></span>
       } @else {
         Visualize
@@ -78,8 +80,44 @@
   <div
     class="mb-8 mt-12 gap-6 grid auto-rows-max grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3"
   >
-    @for (image of createdImages(); track $index) {
-      <img [src]="image" alt="" class="object-contain rounded-lg" />
+    @if (generatedImageState() === "loading") {
+      <div class="col-span-full flex items-center justify-center mt-4">
+        <span class="loading loading-spinner text-primary"></span>
+      </div>
+    }
+    @if (generatedImageState() === "error") {
+      <div class="col-span-full">
+        <span class="text-red-500">
+          An error occurred while generating images. Please try again or contact
+          support if the issue persists.
+        </span>
+      </div>
+    }
+    @if (generatedImageState() === "idle" && displayedImages().length === 0) {
+      <div class="col-span-full">
+        <span class="text-gray-500">
+          No images to display. Please upload an image and visualize your room.
+        </span>
+      </div>
+    }
+
+    @for (image of displayedImages(); track $index) {
+      <img
+        [src]="image.generatedImageUrl"
+        loading="lazy"
+        alt="Generated design for {{ image.roomType }} in {{
+          image.styleType
+        }} style with {{ image.lightingCondition }} lighting"
+        class="object-contain rounded-lg cursor-pointer"
+        (click)="imageModal.showModal(); selectedImage.set(image)"
+        (keydown)="imageModal.showModal(); selectedImage.set(image)"
+      />
     }
   </div>
 </main>
+
+<app-image-dialog
+  [selectedImage]="selectedImage()"
+  (deletedImage)="onImageDelete($event)"
+  #imageModal
+></app-image-dialog>

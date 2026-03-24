@@ -1,0 +1,73 @@
+<dialog #imageDialog class="modal">
+  <div class="modal-box max-w-7xl w-11/12 max-h-8/12">
+    @if (selectedImage()?.generatedImageUrl) {
+      <img
+        [ngSrc]="selectedImage()!.generatedImageUrl"
+        [width]="selectedImage()?.size?.width ?? 1000"
+        [height]="selectedImage()?.size?.height ?? 600"
+        alt="Generated design for {{ selectedImage()?.roomType }} in {{
+          selectedImage()?.styleType
+        }} style with {{ selectedImage()?.lightingCondition }} lighting"
+        class="object-contain rounded-lg mx-auto"
+      />
+    }
+    <div class="flex justify-between mt-4 gap-4">
+      <div class="flex-col gap-2">
+        <div>
+          <span>Style type: </span>
+          <span class="font-semibold">{{ selectedImage()?.styleType }}</span>
+        </div>
+        <div>
+          <span>Room type: </span>
+          <span class="font-semibold">{{ selectedImage()?.roomType }}</span>
+        </div>
+        <div>
+          <span>Lighting condition: </span>
+          <span class="font-semibold capitalize">
+            {{ selectedImage()?.lightingCondition }}
+          </span>
+        </div>
+      </div>
+      <button class="btn btn-ghost" (click)="deleteImageDialog.showModal()">
+        Delete
+      </button>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>
+
+<dialog #deleteImageDialog class="modal">
+  <div class="modal-box">
+    <span>Are you sure you want to delete this image?</span>
+    @if (state() === "error") {
+      <span class="text-error text-xs block mt-2">
+        An error occurred while deleting the image. Please try again or contact
+        support if the issue persists.
+      </span>
+    }
+    <div class="flex justify-end mt-4 gap-4">
+      <button
+        class="btn btn-error"
+        (click)="deleteImage()"
+        [disabled]="state() === 'loading'"
+      >
+        @if (state() === "loading") {
+          <span class="loading loading-spinner"></span>
+        } @else {
+          Delete
+        }
+      </button>
+      <button
+        class="btn btn-ghost"
+        (click)="deleteImageDialog.close(); closeDeleteImageDialog()"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button (click)="closeDeleteImageDialog()">close</button>
+  </form>
+</dialog>

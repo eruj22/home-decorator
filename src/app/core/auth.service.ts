@@ -1,4 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { COOKIE_AUTH } from './utils/constants';
 
@@ -6,10 +7,11 @@ import { COOKIE_AUTH } from './utils/constants';
   providedIn: 'root',
 })
 export class AuthService {
+  private readonly router = inject(Router);
+  private readonly cookieService = inject(CookieService);
+
   readonly authToken = signal<string | null>(null);
   readonly isAuthenticated = computed(() => !!this.authToken());
-
-  private readonly cookieService = inject(CookieService);
 
   constructor() {
     const token = this.cookieService.get(COOKIE_AUTH);
@@ -26,8 +28,9 @@ export class AuthService {
     this.authToken.set(token);
   }
 
-  clearAuthToken() {
+  logout(path = '/') {
     this.cookieService.delete(COOKIE_AUTH, '/');
     this.authToken.set(null);
+    this.router.navigateByUrl(path);
   }
 }
