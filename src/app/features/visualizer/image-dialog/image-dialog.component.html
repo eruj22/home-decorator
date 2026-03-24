@@ -5,7 +5,9 @@
         [ngSrc]="selectedImage()!.generatedImageUrl"
         [width]="selectedImage()?.size?.width ?? 1000"
         [height]="selectedImage()?.size?.height ?? 600"
-        alt=""
+        alt="Generated design for {{ selectedImage()?.roomType }} in {{
+          selectedImage()?.styleType
+        }} style with {{ selectedImage()?.lightingCondition }} lighting"
         class="object-contain rounded-lg mx-auto"
       />
     }
