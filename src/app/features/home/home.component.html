@@ -1,3 +1,24 @@
 <main>
-  <p>home works!</p>
+  <section
+    class="grid lg:grid-cols-[1fr_1fr] gap-12 h-full max-h-[90dvh] items-center max-w-350 mx-auto px-4"
+  >
+    <div class="flex flex-col content-center gap-6 max-w-2xl">
+      <h1 class="text-7xl font-bold">Design your room with AI</h1>
+      <span class="text-xl">
+        Upload a photo of your room and watch AI transform it into your dream
+        space in seconds.
+      </span>
+      <button class="btn btn-primary mt-6 w-fit px-8" routerLink="/visualizer">
+        Start designing for free
+      </button>
+    </div>
+    <img
+      ngSrc="https://www.thisoldhouse.com/wp-content/uploads/2020/03/2010_01_koch_01v2.0-scaled.jpg"
+      alt="Example of AI-generated room design transformation"
+      class="rounded-lg object-cover lg:block hidden h-[80dvh]"
+      [width]="1000"
+      [height]="1000 / 0.705"
+      [priority]="true"
+    />
+  </section>
 </main>
