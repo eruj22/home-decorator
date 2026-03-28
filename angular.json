@@ -27,6 +27,10 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/_redirects"
               }
             ],
             "styles": ["src/tailwind.css", "src/styles.scss"],
