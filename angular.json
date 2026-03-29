@@ -29,8 +29,9 @@
                 "input": "public"
               },
               {
-                "glob": "**/*",
-                "input": "src/_redirects"
+                "glob": "_redirects",
+                "input": "src",
+                "output": "/"
               }
             ],
             "styles": ["src/tailwind.css", "src/styles.scss"],
