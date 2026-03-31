@@ -41,6 +41,7 @@ export class VisualizerComponent {
   private readonly userApiService = inject(UserApiService);
   private readonly authService = inject(AuthService);
 
+  readonly numberOfImagesToGenerate = signal<number>(0);
   readonly selectedImage = signal<GeneratedImage | null>(null);
   readonly displayedImages = signal<GeneratedImage[]>([]);
   readonly uploadImageState = signal<'idle' | 'loading' | 'error' | 'invalid'>(
@@ -83,11 +84,21 @@ export class VisualizerComponent {
     return 'idle';
   });
 
+  private readonly userProfile = toSignal(this.userApiService.getProfile());
+
   constructor() {
     effect(() => {
       const generatedImages = this.generatedImages();
       if (generatedImages) {
         this.displayedImages.set(generatedImages.images);
+      }
+    });
+
+    effect(() => {
+      if (this.userProfile()) {
+        this.numberOfImagesToGenerate.set(
+          this.userProfile()?.availableImagesCount ?? 0,
+        );
       }
     });
   }
@@ -112,6 +123,7 @@ export class VisualizerComponent {
         next: (response) => {
           this.displayedImages.update((images) => [...images, response]);
           this.uploadImageState.set('idle');
+          this.numberOfImagesToGenerate.update((count) => count - 1);
         },
         error: (error: HttpErrorResponse) => {
           if (error.status === 401) {

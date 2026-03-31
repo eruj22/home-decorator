@@ -16,6 +16,12 @@ export class UserApiService {
     );
   }
 
+  getProfile() {
+    return this.http.get<Profile>(
+      `${environment.backendEndpoint}/api/v1/user/profile`,
+    );
+  }
+
   createProfile() {
     return this.http.post<Profile>(
       `${environment.backendEndpoint}/api/v1/user/profile`,

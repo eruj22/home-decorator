@@ -64,11 +64,18 @@
         }}
       </span>
     }
+    @if (numberOfImagesToGenerate() === 0) {
+      <span class="text-gray-500 -mb-8 mt-4 text-xs">
+        You have reached the maximum number of images you can generate.
+      </span>
+    }
 
     <button
       class="btn mt-8 lg:mt-12"
       (click)="uploadImage()"
-      [disabled]="uploadImageState() === 'loading'"
+      [disabled]="
+        uploadImageState() === 'loading' || numberOfImagesToGenerate() === 0
+      "
     >
       @if (uploadImageState() === "loading") {
         <span class="loading loading-spinner"></span>
