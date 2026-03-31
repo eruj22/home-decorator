@@ -41,7 +41,7 @@ export class VisualizerComponent {
   private readonly userApiService = inject(UserApiService);
   private readonly authService = inject(AuthService);
 
-  readonly numberOfImagesToGenerate = signal<number>(0);
+  readonly numberOfImagesToGenerate = signal<number | null>(null);
   readonly selectedImage = signal<GeneratedImage | null>(null);
   readonly displayedImages = signal<GeneratedImage[]>([]);
   readonly uploadImageState = signal<'idle' | 'loading' | 'error' | 'invalid'>(
@@ -123,7 +123,9 @@ export class VisualizerComponent {
         next: (response) => {
           this.displayedImages.update((images) => [...images, response]);
           this.uploadImageState.set('idle');
-          this.numberOfImagesToGenerate.update((count) => count - 1);
+          this.numberOfImagesToGenerate.update((count) =>
+            count === null ? null : count - 1,
+          );
         },
         error: (error: HttpErrorResponse) => {
           if (error.status === 401) {
