@@ -53,19 +53,19 @@
     }
 
     @if (uploadImageState() === "invalid") {
-      <span class="text-red-500 -mb-8 mt-4 text-xs">
+      <span class="text-red-500 -mb-8 mt-4 text-xs font-bold">
         Please fill in all required fields before visualizing your room.
       </span>
     }
     @if (uploadImageState() === "error") {
-      <span class="text-red-500 -mb-8 mt-4 text-xs">
+      <span class="text-red-500 -mb-8 mt-4 text-xs font-bold">
         {{
           uploadImageErrorMessage() ?? "Error uploading file. Please try again."
         }}
       </span>
     }
     @if (numberOfImagesToGenerate() === 0) {
-      <span class="text-gray-500 -mb-8 mt-4 text-xs">
+      <span class="text-red-500 -mb-8 mt-4 text-xs font-bold">
         You have reached the maximum number of images you can generate.
       </span>
     }
@@ -83,6 +83,10 @@
         Visualize
       }
     </button>
+
+    <span class="text-gray-500 text-md">
+      {{ numberOfImagesToGenerate() }} images remaining
+    </span>
   </form>
   <div
     class="mb-8 lg:mt-12 gap-6 grid auto-rows-max grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3"
