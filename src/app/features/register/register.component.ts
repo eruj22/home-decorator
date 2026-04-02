@@ -2,9 +2,10 @@ import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { from, switchMap, take } from 'rxjs';
+import { from, switchMap, take, tap } from 'rxjs';
 import { AuthService } from '../../core/auth.service';
 import { auth } from '../../core/libs/firebase';
+import { UserApiService } from '../../core/user-api.service';
 import { getFirebaseErrorMessage } from '../../core/utils/firebase-errors';
 
 @Component({
@@ -19,6 +20,7 @@ export class RegisterComponent {
 
   private readonly destroyRef = inject(DestroyRef);
   private readonly authService = inject(AuthService);
+  private readonly userApiService = inject(UserApiService);
   private readonly router = inject(Router);
   private readonly fb = new FormBuilder();
   readonly registerForm = this.fb.group({
@@ -37,12 +39,13 @@ export class RegisterComponent {
 
     from(createUserWithEmailAndPassword(auth, email, password))
       .pipe(
-        switchMap((userCredential) => from(userCredential.user.getIdToken())),
         take(1),
+        switchMap((userCredential) => from(userCredential.user.getIdToken())),
+        tap((idToken) => this.authService.setAuthToken(idToken)),
+        switchMap(() => this.userApiService.createProfile()),
       )
       .subscribe({
-        next: (idToken) => {
-          this.authService.setAuthToken(idToken);
+        next: () => {
           this.router.navigateByUrl('/visualizer');
         },
         error: (error) => {
