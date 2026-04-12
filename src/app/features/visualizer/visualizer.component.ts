@@ -1,3 +1,4 @@
+import { NgOptimizedImage } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -7,7 +8,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { catchError, of, take } from 'rxjs';
+import { catchError, delay, of, take } from 'rxjs';
 import { AuthService } from '../../core/auth.service';
 import { FileUploadApiService } from '../../core/file-upload-api.service';
 import {
@@ -32,7 +33,12 @@ interface VisualizerForm {
 
 @Component({
   selector: 'app-visualizer',
-  imports: [FileUploadComponent, ReactiveFormsModule, ImageDialogComponent],
+  imports: [
+    FileUploadComponent,
+    ReactiveFormsModule,
+    ImageDialogComponent,
+    NgOptimizedImage,
+  ],
   templateUrl: './visualizer.component.html',
   styleUrl: './visualizer.component.scss',
 })
@@ -103,6 +109,14 @@ export class VisualizerComponent {
     });
   }
 
+  closedImageModal() {
+    of(null)
+      .pipe(delay(300), take(1))
+      .subscribe(() => {
+        this.selectedImage.set(null);
+      });
+  }
+
   uploadImage() {
     if (this.visualizerForm.invalid) {
       this.uploadImageState.set('invalid');
@@ -121,7 +135,7 @@ export class VisualizerComponent {
       .pipe(take(1))
       .subscribe({
         next: (response) => {
-          this.displayedImages.update((images) => [...images, response]);
+          this.displayedImages.update((images) => [response, ...images]);
           this.uploadImageState.set('idle');
           this.numberOfImagesToGenerate.update((count) =>
             count === null ? null : count - 1,

@@ -116,16 +116,21 @@
     }
 
     @for (image of displayedImages(); track $index) {
-      <img
-        [src]="image.generatedImageUrl"
-        loading="lazy"
-        alt="Generated design for {{ image.roomType }} in {{
-          image.styleType
-        }} style with {{ image.lightingCondition }} lighting"
-        class="object-contain rounded-lg cursor-pointer"
-        (click)="imageModal.showModal(); selectedImage.set(image)"
-        (keydown)="imageModal.showModal(); selectedImage.set(image)"
-      />
+      <div
+        class="relative h-64 cursor-pointer rounded-lg overflow-hidden"
+        (click)="selectedImage.set(image); imageModal.showModal()"
+        (keydown)="selectedImage.set(image); imageModal.showModal()"
+      >
+        <img
+          [ngSrc]="image.generatedImageUrl"
+          [fill]="true"
+          object-fit="cover"
+          class="object-cover"
+          alt="Generated design for {{ image.roomType }} in {{
+            image.styleType
+          }} style with {{ image.lightingCondition }} lighting"
+        />
+      </div>
     }
   </div>
 </main>
@@ -133,5 +138,6 @@
 <app-image-dialog
   [selectedImage]="selectedImage()"
   (deletedImage)="onImageDelete($event)"
+  (closedImageModal)="closedImageModal()"
   #imageModal
 ></app-image-dialog>

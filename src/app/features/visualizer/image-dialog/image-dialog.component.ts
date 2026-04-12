@@ -28,6 +28,7 @@ export class ImageDialogComponent {
 
   readonly selectedImage = input<GeneratedImage | null>(null);
   readonly deletedImage = output<string>();
+  readonly closedImageModal = output<void>();
 
   readonly state = signal<'idle' | 'loading' | 'error'>('idle');
 
@@ -65,5 +66,9 @@ export class ImageDialogComponent {
 
   closeDeleteImageDialog() {
     this.state.set('idle');
+  }
+
+  closeImageModal() {
+    this.closedImageModal.emit();
   }
 }
