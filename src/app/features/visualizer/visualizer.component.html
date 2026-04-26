@@ -33,7 +33,7 @@
       }
     </select>
 
-    <label for="lighting-condition" class="mt-6 mb-2 font-semibold">
+    <label [for]="LIGHTING_CONDITIONS[0].value" class="mt-6 mb-2 font-semibold">
       Lighting conditions
     </label>
     @for (lightingCondition of LIGHTING_CONDITIONS; track $index) {
@@ -121,15 +121,17 @@
         (click)="selectedImage.set(image); imageModal.showModal()"
         (keydown)="selectedImage.set(image); imageModal.showModal()"
       >
-        <img
-          [ngSrc]="image.generatedImageUrl"
-          [fill]="true"
-          object-fit="cover"
-          class="object-cover"
-          alt="Generated design for {{ image.roomType }} in {{
-            image.styleType
-          }} style with {{ image.lightingCondition }} lighting"
-        />
+        @if (image?.generatedImageUrl) {
+          <img
+            [ngSrc]="image.generatedImageUrl"
+            [fill]="true"
+            object-fit="cover"
+            class="object-cover"
+            alt="Generated design for {{ image?.roomType ?? '' }} in {{
+              image?.styleType ?? ''
+            }} style with {{ image?.lightingCondition ?? '' }} lighting"
+          />
+        }
       </div>
     }
   </div>
