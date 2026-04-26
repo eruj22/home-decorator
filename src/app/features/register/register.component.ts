@@ -1,8 +1,9 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { from, switchMap, take, tap } from 'rxjs';
+import { from, switchMap, tap } from 'rxjs';
 import { AuthService } from '../../core/auth.service';
 import { auth } from '../../core/libs/firebase';
 import { UserApiService } from '../../core/user-api.service';
@@ -22,13 +23,19 @@ export class RegisterComponent {
   private readonly authService = inject(AuthService);
   private readonly userApiService = inject(UserApiService);
   private readonly router = inject(Router);
-  private readonly fb = new FormBuilder();
+  private readonly fb = inject(FormBuilder);
   readonly registerForm = this.fb.group({
     email: [null, [Validators.required, Validators.email]],
     password: [null, [Validators.required, Validators.minLength(6)]],
   });
 
-  async onSubmit() {
+  constructor() {
+    this.destroyRef.onDestroy(() => {
+      this.isLoading.set(false);
+    });
+  }
+
+  onSubmit() {
     if (this.registerForm.invalid) {
       return;
     }
@@ -39,7 +46,7 @@ export class RegisterComponent {
 
     from(createUserWithEmailAndPassword(auth, email, password))
       .pipe(
-        take(1),
+        takeUntilDestroyed(this.destroyRef),
         switchMap((userCredential) => from(userCredential.user.getIdToken())),
         tap((idToken) => this.authService.setAuthToken(idToken)),
         switchMap(() => this.userApiService.createProfile()),
@@ -56,9 +63,5 @@ export class RegisterComponent {
           );
         },
       });
-
-    this.destroyRef.onDestroy(() => {
-      this.isLoading.set(false);
-    });
   }
 }

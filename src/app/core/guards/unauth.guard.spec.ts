@@ -1,6 +1,6 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { CanActivateFn } from '@angular/router';
+import { CanActivateFn, Router, UrlTree } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { UnauthGuard } from './unauth.guard';
 
@@ -33,6 +33,9 @@ describe('UnauthGuard', () => {
   it('should deny navigation when the user is authenticated', () => {
     isAuthenticatedSignal.set(true);
 
-    expect(executeGuard({} as any, {} as any)).toBe(false);
+    const result = executeGuard({} as any, {} as any);
+
+    expect(result).toBeInstanceOf(UrlTree);
+    expect(TestBed.inject(Router).serializeUrl(result as UrlTree)).toBe('/');
   });
 });

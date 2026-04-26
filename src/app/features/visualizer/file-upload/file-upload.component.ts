@@ -47,9 +47,7 @@ export class FileUploadComponent {
       return;
     }
     this.errorState.set(null);
-    this.selectedFile.set(
-      URL.createObjectURL(new Blob([file], { type: file?.type })),
-    );
+    this.selectedFile.set(URL.createObjectURL(file));
     this.formInput()?.setValue(file);
   }
 }

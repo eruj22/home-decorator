@@ -1,6 +1,12 @@
 import { NgOptimizedImage } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  linkedSignal,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   FormControl,
@@ -47,9 +53,7 @@ export class VisualizerComponent {
   private readonly userApiService = inject(UserApiService);
   private readonly authService = inject(AuthService);
 
-  readonly numberOfImagesToGenerate = signal<number | null>(null);
   readonly selectedImage = signal<GeneratedImage | null>(null);
-  readonly displayedImages = signal<GeneratedImage[]>([]);
   readonly uploadImageState = signal<'idle' | 'loading' | 'error' | 'invalid'>(
     'idle',
   );
@@ -79,6 +83,10 @@ export class VisualizerComponent {
     ),
   );
 
+  readonly displayedImages = linkedSignal<GeneratedImage[]>(
+    () => this.generatedImages()?.images ?? [],
+  );
+
   readonly generatedImageState = computed<'idle' | 'loading' | 'error'>(() => {
     const generatedImages = this.generatedImages();
     if (generatedImages && 'error' in generatedImages) {
@@ -92,22 +100,9 @@ export class VisualizerComponent {
 
   private readonly userProfile = toSignal(this.userApiService.getProfile());
 
-  constructor() {
-    effect(() => {
-      const generatedImages = this.generatedImages();
-      if (generatedImages) {
-        this.displayedImages.set(generatedImages.images);
-      }
-    });
-
-    effect(() => {
-      if (this.userProfile()) {
-        this.numberOfImagesToGenerate.set(
-          this.userProfile()?.availableImagesCount ?? 0,
-        );
-      }
-    });
-  }
+  readonly numberOfImagesToGenerate = linkedSignal<number | null>(
+    () => this.userProfile()?.availableImagesCount ?? null,
+  );
 
   closedImageModal() {
     of(null)
