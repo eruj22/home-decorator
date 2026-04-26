@@ -90,7 +90,5 @@ describe('RegisterComponent', () => {
     await userEvent.click(screen.getByRole('link', { name: /login/i }));
 
     expect(router.url).toBe('/login');
-
-    // expect(screen.getByRole('link', { name: /login/i })).toBeDefined();
   });
 });
