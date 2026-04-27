@@ -1,8 +1,9 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { from, switchMap, take } from 'rxjs';
+import { from, switchMap } from 'rxjs';
 import { AuthService } from '../../core/auth.service';
 import { auth } from '../../core/libs/firebase';
 import { getFirebaseErrorMessage } from '../../core/utils/firebase-errors';
@@ -20,13 +21,19 @@ export class LoginComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
-  private readonly fb = new FormBuilder();
+  private readonly fb = inject(FormBuilder);
   readonly loginForm = this.fb.group({
     email: [null, [Validators.required, Validators.email]],
     password: [null, [Validators.required, Validators.minLength(6)]],
   });
 
-  async onSubmit() {
+  constructor() {
+    this.destroyRef.onDestroy(() => {
+      this.isLoading.set(false);
+    });
+  }
+
+  onSubmit() {
     if (this.loginForm.invalid) {
       return;
     }
@@ -38,7 +45,7 @@ export class LoginComponent {
     from(signInWithEmailAndPassword(auth, email, password))
       .pipe(
         switchMap((userCredential) => from(userCredential.user.getIdToken())),
-        take(1),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: (idToken) => {
@@ -53,9 +60,5 @@ export class LoginComponent {
           );
         },
       });
-
-    this.destroyRef.onDestroy(() => {
-      this.isLoading.set(false);
-    });
   }
 }

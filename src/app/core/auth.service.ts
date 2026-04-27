@@ -24,6 +24,8 @@ export class AuthService {
     this.cookieService.set(COOKIE_AUTH, token, {
       path: '/',
       expires: new Date(Date.now() + 60 * 60 * 1000),
+      secure: true,
+      sameSite: 'Strict',
     });
     this.authToken.set(token);
   }

@@ -1,17 +1,25 @@
-import { TestBed } from '@angular/core/testing';
-import { RouterModule } from '@angular/router';
+import { provideRouter } from '@angular/router';
+import { render, screen } from '@testing-library/angular';
 import { AppComponent } from './app.component';
 
+const setup = async () => {
+  const result = await render(AppComponent, {
+    providers: [provideRouter([])],
+  });
+  result.detectChanges();
+  return result;
+};
+
 describe('AppComponent', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [AppComponent, RouterModule.forRoot([])],
-    }).compileComponents();
+  it('should render the site title in the navbar', async () => {
+    await setup();
+
+    expect(screen.getByText(/home decorator/i)).toBeDefined();
   });
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+  it('should render the router outlet', async () => {
+    const { container } = await setup();
+
+    expect(container.querySelector('router-outlet')).not.toBeNull();
   });
 });
