@@ -2,6 +2,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { metaDescriptions } from '../../core/utils/meta-descriptions';
 
 @Component({
   selector: 'app-home',
@@ -11,4 +12,8 @@ import { environment } from '../../../environments/environment';
 })
 export class HomeComponent {
   readonly storageUrl = environment.storageUrl;
+
+  constructor() {
+    metaDescriptions('home');
+  }
 }

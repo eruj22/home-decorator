@@ -7,6 +7,7 @@ import { from, switchMap } from 'rxjs';
 import { AuthService } from '../../core/auth.service';
 import { auth } from '../../core/libs/firebase';
 import { getFirebaseErrorMessage } from '../../core/utils/firebase-errors';
+import { metaDescriptions } from '../../core/utils/meta-descriptions';
 
 @Component({
   selector: 'app-login',
@@ -28,6 +29,8 @@ export class LoginComponent {
   });
 
   constructor() {
+    metaDescriptions('login');
+
     this.destroyRef.onDestroy(() => {
       this.isLoading.set(false);
     });

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /visualizer
+Disallow: /login
+Disallow: /register
+
+Sitemap: https://home-ai-decorator.netlify.app/sitemap.xml
