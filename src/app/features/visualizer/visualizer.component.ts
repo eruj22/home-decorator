@@ -22,6 +22,7 @@ import {
   UploadImagePayload,
 } from '../../core/models/image-upload.model';
 import { UserApiService } from '../../core/user-api.service';
+import { metaDescriptions } from '../../core/utils/meta-descriptions';
 import { FileUploadComponent } from './file-upload/file-upload.component';
 import { ImageDialogComponent } from './image-dialog/image-dialog.component';
 import {
@@ -52,6 +53,10 @@ export class VisualizerComponent {
   private readonly fileUploadApiService = inject(FileUploadApiService);
   private readonly userApiService = inject(UserApiService);
   private readonly authService = inject(AuthService);
+
+  constructor() {
+    metaDescriptions('visualizer');
+  }
 
   readonly selectedImage = signal<GeneratedImage | null>(null);
   readonly uploadImageState = signal<'idle' | 'loading' | 'error' | 'invalid'>(

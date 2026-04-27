@@ -8,6 +8,7 @@ import { AuthService } from '../../core/auth.service';
 import { auth } from '../../core/libs/firebase';
 import { UserApiService } from '../../core/user-api.service';
 import { getFirebaseErrorMessage } from '../../core/utils/firebase-errors';
+import { metaDescriptions } from '../../core/utils/meta-descriptions';
 
 @Component({
   selector: 'app-register',
@@ -30,6 +31,8 @@ export class RegisterComponent {
   });
 
   constructor() {
+    metaDescriptions('register');
+
     this.destroyRef.onDestroy(() => {
       this.isLoading.set(false);
     });
