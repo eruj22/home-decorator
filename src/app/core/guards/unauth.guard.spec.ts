@@ -22,10 +22,6 @@ describe('UnauthGuard', () => {
     });
   });
 
-  it('should be created', () => {
-    expect(executeGuard).toBeTruthy();
-  });
-
   it('should allow navigation when the user is not authenticated', () => {
     expect(executeGuard({} as any, {} as any)).toBe(true);
   });

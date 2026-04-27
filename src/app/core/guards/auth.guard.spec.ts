@@ -23,10 +23,6 @@ describe('AuthGuard', () => {
     });
   });
 
-  it('should be created', () => {
-    expect(executeGuard).toBeTruthy();
-  });
-
   it('should allow navigation when the user is authenticated', () => {
     isAuthenticatedSignal.set(true);
 
